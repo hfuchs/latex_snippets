@@ -1,0 +1,36 @@
+% 2012-03-13, I first thought that this SO question did the trick
+% http://tex.stackexchange.com/questions/5116/making-switch-case-with-etoolboxs-ifdefequal
+%
+% But it really, /really/ didn't implement anything remotely as generic
+% as the following (with 'ifthen).
+
+\documentclass{article}
+
+\usepackage{ifthen}
+
+\newenvironment{switch}[0]{%
+    \newboolean{nocase}
+    \setboolean{nocase}{true}
+    \newcommand{\case}[2]{%
+        \ifthenelse
+        {##1}
+        {##2 \setboolean{nocase}{false}}
+        {}
+    }
+    \newcommand{\otherwise}[1]{%
+        \ifthenelse
+        {\boolean{nocase}}
+        {##1}
+        {}
+    }
+}{}
+
+\begin{document}
+
+\begin{switch}
+    \case{\equal{1}{2}}{gurke}
+    \case{\equal{2}{2}}{salat}
+    \otherwise{tomate}
+\end{switch}
+
+\end{document}
